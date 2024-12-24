@@ -1,6 +1,14 @@
 import yfinance as yf
 import smtplib
 import datetime
+import logging
+
+
+logging.basicConfig(
+    filename='StockPriceTracker.log',
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
 
 
 class StockPriceTracker:
@@ -23,6 +31,8 @@ class StockPriceTracker:
             "desired_price": desired_price,
             "email": recipient_email
         })
+        logging.info(f"Added stock: {ticker} with target price {
+                     desired_price} for {recipient_email}")
 
     def send_mail(self, stock_name, current_price, desired_price, recipient_email):
         """
@@ -42,10 +52,10 @@ class StockPriceTracker:
             msg = f"Subject: {subject}\n\n{body}"
 
             server.sendmail(self.email, recipient_email, msg)
-            print(f"Email sent to {recipient_email} for {stock_name}")
+            logging.info(f"Email sent to {recipient_email} for {stock_name}")
             server.quit()
         except Exception as e:
-            print(f"Failed to send email for {stock_name}: {e}")
+            logging.error(f"Failed to send email for {stock_name}: {e}")
 
     def check_prices(self):
         """
@@ -61,14 +71,15 @@ class StockPriceTracker:
                 history = stock_data.history(period="1d")
 
                 if history.empty or "Close" not in history:
-                    print(f"No data available for {ticker}")
+                    logging.warning(f"No data available for {ticker}")
                     continue
 
                 current_price = history["Close"].iloc[-1]
-                print(f"{ticker}: {current_price} (Target: {desired_price})")
+                logging.info(f"{ticker}: Current price is {
+                             current_price} (Target: {desired_price})")
 
                 if current_price < desired_price:
                     self.send_mail(ticker, current_price,
                                    desired_price, recipient_email)
             except Exception as e:
-                print(f"Error fetching data for {ticker}: {e}")
+                logging.error(f"Error fetching data for {ticker}: {e}")
