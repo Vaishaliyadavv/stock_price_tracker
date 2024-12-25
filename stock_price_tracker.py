@@ -13,19 +13,19 @@ logging.basicConfig(
 
 
 class StockPriceTracker:
-    def __init__(self, email, password, recipient_email):
+    def __init__(self, smtp_server, smtp_port, email, password, recipient_email):
         """
         Initializes the tracker with email credentials.
         """
-        self.smtp_server = "smtp.gmail.com"  # Default SMTP server
-        self.smtp_port = 587  # Default SMTP port
+        self.smtp_server = smtp_server
+        self.smtp_port = smtp_port
         self.email = email
         self.password = password
         self.stocks_to_monitor = []
         self.recipient_email = recipient_email
         self.scheduler = BlockingScheduler()
 
-        self.schedule_check_prices(CronTrigger(hour="*/15"))
+        self.schedule_check_prices(CronTrigger(hour=15, minute=0))
 
     def add_stock(self, ticker, desired_price, email=None):
         """
