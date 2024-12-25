@@ -1,4 +1,3 @@
-import time
 import yfinance as yf
 import smtplib
 import logging

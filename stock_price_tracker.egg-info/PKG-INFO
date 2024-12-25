@@ -1,3 +1,17 @@
+Metadata-Version: 2.1
+Name: stock_price_tracker
+Version: 1.0.0
+Summary: A Python package to track stock prices and send email alerts when price conditions are met.
+Home-page: https://github.com/Vaishaliyadavv/stock_price_tracker.git
+Author: Vaishali Yadav
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+Requires-Dist: yfinance
+Requires-Dist: apscheduler
+
 # Stock Price Tracker
 
 The **Stock Price Tracker** is a Python package that allows you to monitor stock prices and receive email alerts when a stock's price meets a specified target. This package uses `yfinance` to fetch real-time stock data, `apscheduler` for scheduling periodic checks, and `smtplib` to send email notifications.
