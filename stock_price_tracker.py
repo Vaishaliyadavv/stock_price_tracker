@@ -5,7 +5,6 @@ import logging
 
 
 logging.basicConfig(
-    filename='StockPriceTracker.log',
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )

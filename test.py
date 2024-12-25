@@ -1,4 +1,4 @@
-import StockPriceTracker
+from stock_price_tracker import StockPriceTracker
 import time
 
 # Initialize tracker with test email credentials
