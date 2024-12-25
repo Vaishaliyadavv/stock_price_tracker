@@ -107,24 +107,3 @@ class StockPriceTracker:
         """
         self.scheduler.start()
         logging.info("Scheduler started. Press Ctrl+C to exit.")
-
-    def stop_scheduler(self):
-        """
-        Stops the scheduler.
-        """
-        self.scheduler.shutdown()
-        logging.info("Scheduler stopped.")
-
-    def run_scheduler(self):
-        """
-        Starts the scheduler and keeps the script running, handles graceful shutdown.
-        """
-        self.start_scheduler()
-        try:
-            print("Scheduler is running. Waiting for price checks...")
-            while True:
-                # Keeps the script alive to let the scheduler run
-                time.sleep(1)
-        except (KeyboardInterrupt, SystemExit):
-            print("Stopping scheduler...")
-            self.stop_scheduler()

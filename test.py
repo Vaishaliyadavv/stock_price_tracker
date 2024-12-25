@@ -15,5 +15,4 @@ tracker.add_stock("AAPL", 150)
 tracker.add_stock("MSFT", 280)
 tracker.add_stock("GOOGL", 2500)
 
-# Start the scheduler
-tracker.run_scheduler()
+tracker.start_scheduler()
