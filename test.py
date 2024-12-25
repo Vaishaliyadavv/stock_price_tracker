@@ -1,18 +1,19 @@
-from stock_price_tracker import StockPriceTracker
-import time
 
+from stock_price_tracker import StockPriceTracker
+from apscheduler.triggers.cron import CronTrigger
+
+# Initialize the tracker
 tracker = StockPriceTracker(
-    email="email_here",
-    password="password_here",
-    recipient_email="send_to_this"
+    email="vaishali.yadavv09@gmail.com",
+    password="mfqedvmolvwksrqk",
+    recipient_email="on28vaishali@gmail.com",
+    cron_trigger=CronTrigger(minute="*")  # Every minute for testing
 )
 
 # Add stocks to monitor
-tracker.add_stock("AAPL", 150000)
-tracker.add_stock("MSFT", 28000)
-tracker.add_stock("GOOGL", 25000, email="other_email_here")
+tracker.add_stock("AAPL", 150)
+tracker.add_stock("MSFT", 280)
+tracker.add_stock("GOOGL", 2500)
 
-tracker.check_prices()
-# while True:
-#     tracker.check_prices()
-#     time.sleep(60 * 60 * 24)
+# Start the scheduler
+tracker.run_scheduler()

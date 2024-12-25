@@ -2,6 +2,8 @@ import time
 import yfinance as yf
 import smtplib
 import logging
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.cron import CronTrigger
 
 # Configure logging
 logging.basicConfig(
@@ -11,7 +13,7 @@ logging.basicConfig(
 
 
 class StockPriceTracker:
-    def __init__(self, email, password, recipient_email):
+    def __init__(self, email, password, recipient_email, cron_trigger=None):
         """
         Initializes the tracker with email credentials.
         """
@@ -21,6 +23,10 @@ class StockPriceTracker:
         self.password = password
         self.stocks_to_monitor = []
         self.recipient_email = recipient_email
+        self.scheduler = BackgroundScheduler()
+
+        if cron_trigger:
+            self.schedule_check_prices(cron_trigger)
 
     def add_stock(self, ticker, desired_price, email=None):
         """
@@ -86,3 +92,39 @@ class StockPriceTracker:
             except Exception as e:
                 logging.error(f"Error fetching data for {
                               ticker}: {e}", exc_info=True)
+
+    def schedule_check_prices(self, cron_trigger):
+        """
+        Schedules the check_prices method using the provided cron trigger.
+        """
+        self.scheduler.add_job(
+            self.check_prices, cron_trigger)
+        logging.info(f"Scheduled daily check with CronTrigger: {cron_trigger}")
+
+    def start_scheduler(self):
+        """
+        Starts the scheduler.
+        """
+        self.scheduler.start()
+        logging.info("Scheduler started. Press Ctrl+C to exit.")
+
+    def stop_scheduler(self):
+        """
+        Stops the scheduler.
+        """
+        self.scheduler.shutdown()
+        logging.info("Scheduler stopped.")
+
+    def run_scheduler(self):
+        """
+        Starts the scheduler and keeps the script running, handles graceful shutdown.
+        """
+        self.start_scheduler()
+        try:
+            print("Scheduler is running. Waiting for price checks...")
+            while True:
+                # Keeps the script alive to let the scheduler run
+                time.sleep(1)
+        except (KeyboardInterrupt, SystemExit):
+            print("Stopping scheduler...")
+            self.stop_scheduler()
