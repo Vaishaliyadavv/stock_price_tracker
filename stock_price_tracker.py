@@ -2,7 +2,7 @@ import time
 import yfinance as yf
 import smtplib
 import logging
-from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.schedulers.background import BlockingScheduler
 from apscheduler.triggers.cron import CronTrigger
 
 # Configure logging
@@ -13,7 +13,7 @@ logging.basicConfig(
 
 
 class StockPriceTracker:
-    def __init__(self, email, password, recipient_email, cron_trigger=None):
+    def __init__(self, email, password, recipient_email):
         """
         Initializes the tracker with email credentials.
         """
@@ -23,10 +23,9 @@ class StockPriceTracker:
         self.password = password
         self.stocks_to_monitor = []
         self.recipient_email = recipient_email
-        self.scheduler = BackgroundScheduler()
+        self.scheduler = BlockingScheduler()
 
-        if cron_trigger:
-            self.schedule_check_prices(cron_trigger)
+        self.schedule_check_prices(CronTrigger(hour="*/15"))
 
     def add_stock(self, ticker, desired_price, email=None):
         """
