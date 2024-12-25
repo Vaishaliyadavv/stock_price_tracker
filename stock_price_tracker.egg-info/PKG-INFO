@@ -45,6 +45,8 @@ pip install stock_price_tracker
 from stock_price_tracker import StockPriceTracker
 
 tracker = StockPriceTracker(
+    smtp_server="appropriate_server",
+    smtp_port=(port_number),
     email="your_email@gmail.com",
     password="your_email_password",
     recipient_email="recipient_email@gmail.com"
@@ -75,14 +77,19 @@ from stock_price_tracker import StockPriceTracker
 
 # Initialize the tracker
 tracker = StockPriceTracker(
-    email="your_email@gmail.com",
-    password="your_email_password",
-    recipient_email="recipient_email@gmail.com"
+    smtp_server="smtp.gmail.com",  # Use the appropriate SMTP server
+    smtp_port=587,  # Port for Gmail
+    email="your_email@gmail.com",  # Your email address
+    password="your_email_password",  # Your email app-specific password
+    recipient_email="recipient_email@gmail.com"  # Email to receive alerts
 )
 
 # Add stocks
 tracker.add_stock("AAPL", 150)
 tracker.add_stock("MSFT", 280)
+
+# Check prices immediately
+tracker.check_prices()
 
 # Start monitoring
 tracker.start_scheduler()
