@@ -1,19 +1,18 @@
 from stock_price_tracker import StockPriceTracker
 import time
 
-# Initialize tracker with test email credentials
 tracker = StockPriceTracker(
-    email="emai_here",
-    password="put_your_password_here",
+    email="email_here",
+    password="password_here",
+    recipient_email="send_to_this"
 )
 
-# Add test stocks
-tracker.add_stock(ticker="TATAMOTORS.NS", desired_price=100000,
-                  recipient_email="on28vaishali@gmail.com")
-tracker.add_stock(ticker="AAPL", desired_price=120000,
-                  recipient_email="on28vaishali@gmail.com")
-# add more stocks .....
+# Add stocks to monitor
+tracker.add_stock("AAPL", 150000)
+tracker.add_stock("MSFT", 28000)
+tracker.add_stock("GOOGL", 25000, email="other_email_here")
 
-while True:
-    tracker.check_prices()
-    time.sleep(60 * 60 * 24)
+tracker.check_prices()
+# while True:
+#     tracker.check_prices()
+#     time.sleep(60 * 60 * 24)

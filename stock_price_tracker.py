@@ -1,9 +1,9 @@
+import time
 import yfinance as yf
 import smtplib
-import datetime
 import logging
 
-
+# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s'
@@ -11,7 +11,7 @@ logging.basicConfig(
 
 
 class StockPriceTracker:
-    def __init__(self, email, password):
+    def __init__(self, email, password, recipient_email):
         """
         Initializes the tracker with email credentials.
         """
@@ -20,41 +20,44 @@ class StockPriceTracker:
         self.email = email
         self.password = password
         self.stocks_to_monitor = []
+        self.recipient_email = recipient_email
 
-    def add_stock(self, ticker, desired_price, recipient_email):
+    def add_stock(self, ticker, desired_price, email=None):
         """
         Adds a stock to the monitoring list.
         """
+        stock_email = email or self.recipient_email
         self.stocks_to_monitor.append({
             "ticker": ticker,
             "desired_price": desired_price,
-            "email": recipient_email
+            "email": stock_email
         })
         logging.info(f"Added stock: {ticker} with target price {
-                     desired_price} for {recipient_email}")
+                     desired_price} for {stock_email}")
 
     def send_mail(self, stock_name, current_price, desired_price, recipient_email):
         """
         Sends an email alert for a stock.
         """
         try:
-            server = smtplib.SMTP(self.smtp_server, self.smtp_port)
-            server.starttls()
-            server.login(self.email, self.password)
+            with smtplib.SMTP(self.smtp_server, self.smtp_port) as server:
+                server.starttls()
+                server.login(self.email, self.password)
 
-            subject = f'Price Alert: {stock_name}'
-            body = (
-                f"The stock {stock_name} has fallen to {
-                    current_price}, below your desired price of {desired_price}.\n\n"
-                f"Check it out!"
-            )
-            msg = f"Subject: {subject}\n\n{body}"
+                subject = f'Price Alert: {stock_name}'
+                body = (
+                    f"The stock {stock_name} has fallen to {current_price}, "
+                    f"below your desired price of {
+                        desired_price}.\n\nCheck it out!"
+                )
+                msg = f"Subject: {subject}\n\n{body}"
 
-            server.sendmail(self.email, recipient_email, msg)
-            logging.info(f"Email sent to {recipient_email} for {stock_name}")
-            server.quit()
+                server.sendmail(self.email, recipient_email, msg)
+                logging.info(f"Email sent to {
+                             recipient_email} for {stock_name}")
         except Exception as e:
-            logging.error(f"Failed to send email for {stock_name}: {e}")
+            logging.error(f"Failed to send email for {
+                          stock_name}: {e}", exc_info=True)
 
     def check_prices(self):
         """
@@ -81,4 +84,5 @@ class StockPriceTracker:
                     self.send_mail(ticker, current_price,
                                    desired_price, recipient_email)
             except Exception as e:
-                logging.error(f"Error fetching data for {ticker}: {e}")
+                logging.error(f"Error fetching data for {
+                              ticker}: {e}", exc_info=True)
